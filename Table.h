@@ -23,6 +23,5 @@ public:
         return cells;
     }
 };
-};
 
-#endif // TABLE_H
+#endif
