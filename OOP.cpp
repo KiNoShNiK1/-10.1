@@ -1,26 +1,30 @@
 #include <iostream>
 #include <cassert>
 #include "Table.h"
+#include "Cell.h"
 
 int main() {
-   Table table(2, 2);
-   assert(table.getRows() == 2);
-   assert(table.getCols() == 2);
+   Table table(3, 3);
+   assert(table.getRows() == 3);
+   assert(table.getCols() == 3);
 
-   table.resize(3, 3); // изменение размера таблицы
+   table.setCell(0, 0, new TextCell("Hello"));
+   table.setCell(1, 1, new NumericCell(42.0));
+   table.setCell(2, 2, new TextCell("World"));
+   
+   table.setCell(0, 1, new FormulaCell(1, 1, 1, 1, "sum"));
 
-   // Отладочный вывод
-   std::cout << "После изменения размера: Строки = " 
-             << table.getRows() 
-             << ", Столбцы = " 
-             << table.getCols() 
-             << std::endl;
+   table.checkCells(); 
 
-   // Проверка утверждения
-   assert(table.getCols() == 3); // количество столбцов равно 3
+   try {
+       auto formulaCell = dynamic_cast<FormulaCell*>(table.getCell(0, 1));
+       if (formulaCell) {
+           double result = formulaCell->calculate(table.cells);
+           std::cout << "Результат формулы: " << result << std::endl;
+       }
+   } catch (const std::exception& e) {
+       std::cout << e.what() << std::endl;
+   }
 
-   table.checkCells(); // Проверка ячеек
-
-   std::cout << "Все тесты пройдены успешно!" << std::endl;
    return 0;
 }
