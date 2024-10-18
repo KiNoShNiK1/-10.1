@@ -19,6 +19,10 @@ public:
     void setCell(size_t row, size_t col, Cell* cell);
     
     void checkCells() const;
+    const std::vector<std::vector<Cell*>>& getCells() const {
+        return cells;
+    }
+};
 };
 
 #endif // TABLE_H
