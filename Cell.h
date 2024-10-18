@@ -4,29 +4,40 @@
 #include <string>
 
 class Cell {
+public:
+    virtual ~Cell() = default; 
+    virtual std::string identify() const = 0; 
+};
+
+class TextCell : public Cell {
 private:
     std::string textValue;
-    double numVal;
-    bool isNumeric;
-    bool isEmpty;
 
 public:
-    // Конструкторы
-    Cell();
-    Cell(const std::string& text);
-    Cell(double number);
-    Cell(const Cell& other);
-
-    // Методы доступа
+    TextCell(const std::string& text);
+    std::string identify() const override;
     std::string getTextValue() const;
-    double getNumericValue() const;
-    bool isNumericCell() const;
-    bool isEmptyCell() const;
+};
 
-    // Методы изменения состояния
-    void setTextValue(const std::string& text);
-    void setNumericValue(double number);
-    void clear();
+class NumericCell : public Cell {
+private:
+    double numericValue;
+
+public:
+    NumericCell(double number);
+    std::string identify() const override;
+    double getNumericValue() const;
+};
+
+class FormulaCell : public Cell {
+private:
+    size_t startRow, startCol, endRow, endCol;
+    std::string operation;
+
+public:
+    FormulaCell(size_t startRow, size_t startCol, size_t endRow, size_t endCol, const std::string& op);
+    std::string identify() const override;
+    double calculate(const std::vector<std::vector<Cell*>>& table) const;
 };
 
 #endif // CELL_H
