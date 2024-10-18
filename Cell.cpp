@@ -1,41 +1,50 @@
 #include "Cell.h"
+#include <stdexcept>
+#include <numeric>
+#include <iostream>
 
-Cell::Cell() : isNumeric(false), isEmpty(true) {}
+TextCell::TextCell(const std::string& text) : textValue(text) {}
 
-Cell::Cell(const std::string& text) : textValue(text), isNumeric(false), isEmpty(false) {}
-
-Cell::Cell(double number) : numericValue(number), isNumeric(true), isEmpty(false) {}
-
-Cell::Cell(const Cell& other)
-    : textValue(other.textValue), numericValue(other.numericValue),
-      isNumeric(other.isNumeric), isEmpty(other.isEmpty) {}
-
-std::string Cell::getTextValue() const {
-    return isNumeric || isEmpty ? "" : textValue;
+std::string TextCell::identify() const {
+    return "Текстовая ячейка: " + textValue;
 }
 
-double Cell::getNumericValue() const {
-    return isNumeric && !isEmpty ? numericValue : 0.0;
+std::string TextCell::getTextValue() const {
+    return textValue;
 }
 
-bool Cell::isNumericCell() const { return isNumeric; }
-bool Cell::isEmptyCell() const { return isEmpty; }
+NumericCell::NumericCell(double number) : numericValue(number) {}
 
-void Cell::setTextValue(const std::string& text) {
-    textValue = text;
-    isNumeric = false;
-    isEmpty = false;
+std::string NumericCell::identify() const {
+    return "Числовая ячейка: " + std::to_string(numericValue);
 }
 
-void Cell::setNumericValue(double number) {
-    numericValue = number;
-    isNumeric = true;
-    isEmpty = false;
+double NumericCell::getNumericValue() const {
+    return numericValue;
 }
 
-void Cell::clear() {
-    textValue.clear();
-    numericValue = 0.0;
-    isNumeric = false;
-    isEmpty = true;
+FormulaCell::FormulaCell(size_t startRow, size_t startCol, size_t endRow, size_t endCol, const std::string& op)
+    : startRow(startRow), startCol(startCol), endRow(endRow), endCol(endCol), operation(op) {}
+
+std::string FormulaCell::identify() const {
+    return "Ячейка с формулой: " + operation + " от (" + 
+           std::to_string(startRow) + ", " + std::to_string(startCol) + ") до (" +
+           std::to_string(endRow) + ", " + std::to_string(endCol) + ")";
+}
+
+double FormulaCell::calculate(const std::vector<std::vector<Cell*>>& table) const {
+    if (operation == "sum") {
+        double sum = 0.0;
+        for (size_t i = startRow; i <= endRow; ++i) {
+            for (size_t j = startCol; j <= endCol; ++j) {
+                if (auto numericCell = dynamic_cast<NumericCell*>(table[i][j])) {
+                    sum += numericCell->getNumericValue();
+                } else {
+                    throw std::runtime_error("Ошибка: не все ячейки числовые.");
+                }
+            }
+        }
+        return sum;
+    }
+    throw std::runtime_error("Ошибка: операция '" + operation + "' не поддерживается.");
 }
