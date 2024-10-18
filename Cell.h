@@ -40,4 +40,4 @@ public:
     double calculate(const std::vector<std::vector<Cell*>>& table) const;
 };
 
-#endif // CELL_H
+#endif 
