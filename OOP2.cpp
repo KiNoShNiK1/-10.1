@@ -117,6 +117,10 @@ public:
            }
        }
    }
+
+   const std::vector<std::vector<Cell*>>& getCells() const { 
+       return cells;
+   }
 };
 
 int main() {
@@ -135,7 +139,7 @@ int main() {
    try {
        auto formulaCell = dynamic_cast<FormulaCell*>(table.getCell(0, 1));
        if (formulaCell) {
-           double result = formulaCell->calculate(table.cells);
+           double result = formulaCell->calculate(table.getCells());
            std::cout << "Результат формулы: " << result << std::endl;
        }
    } catch (const std::exception& e) {
