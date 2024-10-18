@@ -6,23 +6,18 @@
 
 class Table {
 private:
-    std::vector<std::vector<Cell>> cells;
+    std::vector<std::vector<Cell*>> cells;
 
 public:
-    // Конструкторы
-    Table();
     Table(size_t rows, size_t cols);
-
-    // Методы доступа
+    ~Table();
+    
     size_t getRows() const;
     size_t getCols() const;
-    Cell getCell(size_t row, size_t col) const;
-
-    // Методы изменения состояния
-    void setCell(size_t row, size_t col, const Cell& cell);
-    void resize(size_t rows, size_t cols);
     
-    // Метод проверки ячеек
+    Cell* getCell(size_t row, size_t col) const;
+    void setCell(size_t row, size_t col, Cell* cell);
+    
     void checkCells() const;
 };
 
