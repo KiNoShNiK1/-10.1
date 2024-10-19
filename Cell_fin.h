@@ -1,5 +1,5 @@
-#ifndef CELL_H
-#define CELL_H
+#ifndef CELL_FIN_H
+#define CELL_FIN_H
 
 #include <string>
 #include <vector>
@@ -7,12 +7,14 @@
 #include <numeric>
 #include <algorithm>
 
+// Абстрактный базовый класс ячейки
 class Cell {
 public:
     virtual ~Cell() = default;
-    virtual std::string identify() const = 0;
+    virtual std::string identify() const = 0; // Возвращает строковое описание ячейки
 };
 
+// Текстовая ячейка
 class TextCell : public Cell {
 private:
     std::string textValue;
@@ -23,6 +25,7 @@ public:
     std::string getTextValue() const;
 };
 
+// Числовая ячейка
 class NumericCell : public Cell {
 private:
     double numericValue;
@@ -33,6 +36,7 @@ public:
     double getNumericValue() const;
 };
 
+// Ячейка с формулой
 class FormulaCell : public Cell {
 private:
     size_t startRow, startCol, endRow, endCol;
@@ -45,4 +49,3 @@ public:
 };
 
 #endif
-  
